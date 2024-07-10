@@ -359,7 +359,7 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 		onBasePower(basePower, attacker, defender, move) {
 			if (move.flags['contact']) {
 				this.debug('Baseball Bat boost');
-				return this.chainModify([5120, 4096]);
+				return this.chainModify([4915, 4096]);
 			}
 		},
 		/*
@@ -405,7 +405,7 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 				}
 			}
 		},
-		desc: "Holder's contact moves have 1.25x power. If hit by bullet/bomb move, it deals 50% damage and the item breaks.",
+		desc: "Holder's contact moves have 1.2x power. If hit by a bullet move, it deals 50% damage and the item breaks.",
 		num: -1007,
 		gen: 9,
 		rating: 3,
@@ -500,7 +500,7 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 		itemUser: ["Meloetta"],
 		num: -1010,
 		gen: 9,
-		desc: "If held by Meloetta: Pirouette Forme on entry, Sound immunity, +1 Attack when hit by Sound.",
+		desc: "If held by Meloetta: Pirouette Forme on entry, Sound & Hazard immunity, +1 Attack when hit by Sound.",
 	},
 	charizarditeshardx: {
 		name: "Charizardite Shard X",
@@ -516,6 +516,7 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 				this.add('-anim', pokemon, "Cosmic Power", pokemon);
 				pokemon.setType(pokemon.getTypes(true).map(type => type === targetType ? "Dragon" : type));
 				this.add('-message', `${pokemon.name}'s Charizardite Shard X changed its type!`);
+				pokemon.addVolatile('firedragon');
 				pokemon.setAbility('toughclaws', pokemon, true);
 				this.add('-activate', pokemon, 'ability: Tough Claws');
 				this.boost({atk: 1});

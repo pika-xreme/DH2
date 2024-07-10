@@ -44,7 +44,7 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 			}
 			if (!this.field.isTerrain('electricterrain')) {
 				for (const quark of ['quarkdrive', 'lightdrive', 'quarksurge', 'nanorepairs', 'circuitbreaker', 'heatproofdrive',
-											'faultyphoton', 'firewall']) { 
+											'faultyphoton', 'firewall', 'innovate']) { 
 					if (pokemon.hasAbility(quark)) {
 						if (!pokemon.volatiles[quark] && pokemon.useItem()) {
 							pokemon.addVolatile(quark);
@@ -257,25 +257,123 @@ export const Items: {[itemid: string]: ModdedItemData} = {
 		megaEvolves: "Aero Wake",
 		itemUser: ["Aero Wake"],
 		onTakeItem(item, source) {
-			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			if ([item.megaEvolves,"Aerodirge"].includes(source.baseSpecies.baseSpecies)) return false;
 			return true;
 		},
 		num: 672,
 		desc: "If held by an Aero Wake, this item allows it to Mega Evolve in battle.",
 	},
+	sharpedonite: {
+		name: "Sharpedonite",
+		spritenum: 619,
+		megaStone: "Zoroshark-Hisui-Mega",
+		megaEvolves: "Zoroshark-Hisui",
+		itemUser: ["Zoroshark-Hisui"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 759,
+		desc: "If held by a Hisuian Zoroshark, this item allows it to Mega Evolve in battle.",
+	},
+	cameruptite: {
+		name: "Cameruptite",
+		spritenum: 625,
+		megaStone: "Wo-Rupt-Mega",
+		megaEvolves: "Wo-Rupt",
+		itemUser: ["Wo-Rupt"],
+		onTakeItem(item, source) {
+			if (item.megaEvolves === source.baseSpecies.baseSpecies) return false;
+			return true;
+		},
+		num: 767,
+		desc: "If held by a Wo-Rupt, this item allows it to Mega Evolve in battle.",
+	},
 	eviolite: {
 		inherit: true,
 		onModifyDefPriority: 2,
 		onModifyDef(def, pokemon) {
-			if (pokemon.baseSpecies.nfe || pokemon.baseSpecies.num === 215) {
+			if (pokemon.baseSpecies.nfe || pokemon.baseSpecies.baseSpecies === 'Sneasel') {
 				return this.chainModify(1.5);
 			}
 		},
 		onModifySpDPriority: 2,
 		onModifySpD(spd, pokemon) {
-			if (pokemon.baseSpecies.nfe || pokemon.baseSpecies.num === 215) {
+			if (pokemon.baseSpecies.nfe || pokemon.baseSpecies.baseSpecies === 'Sneasel') {
 				return this.chainModify(1.5);
 			}
 		},
+	},
+	hearthflamemask: {
+		name: "Hearthflame Mask",
+		spritenum: 760,
+		fling: {
+			basePower: 60,
+		},
+		onStart(pokemon) {
+			pokemon.canTerastallize = null;
+		},
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			if (user.baseSpecies.name.startsWith('Hattepon-Hearthflame')) {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		onTakeItem(item, source) {
+			if (source.baseSpecies.baseSpecies === 'Hattepon') return false;
+			return true;
+		},
+		forcedForme: "Hattepon-Hearthflame",
+		itemUser: ["Hattepon-Hearthflame"],
+		num: 2408,
+		gen: 9,
+		desc: "Hattepon-Hearthflame: 1.2x power attacks; Terastallize to gain Embody Aspect.",
+	},
+	wellspringmask: {
+		name: "Wellspring Mask",
+		spritenum: 759,
+		fling: {
+			basePower: 60,
+		},
+		onStart(pokemon) {
+			pokemon.canTerastallize = null;
+		},
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			if (user.baseSpecies.name.startsWith('Hattepon-Wellspring')) {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		onTakeItem(item, source) {
+			if (source.baseSpecies.baseSpecies === 'Hattepon') return false;
+			return true;
+		},
+		forcedForme: "Hattepon-Wellspring",
+		itemUser: ["Hattepon-Wellspring"],
+		num: 2407,
+		gen: 9,
+		desc: "Hattepon-Wellspring: 1.2x power attacks; Terastallize to gain Embody Aspect.",
+	},
+	cornerstonemask: {
+		name: "Cornerstone Mask",
+		spritenum: 758,
+		fling: {
+			basePower: 60,
+		},
+		onBasePowerPriority: 15,
+		onBasePower(basePower, user, target, move) {
+			if (user.baseSpecies.name.startsWith('Hattepon-Cornerstone')) {
+				return this.chainModify([4915, 4096]);
+			}
+		},
+		onTakeItem(item, source) {
+			if (source.baseSpecies.baseSpecies === 'Hattepon') return false;
+			return true;
+		},
+		forcedForme: "Hattepon-Cornerstone",
+		itemUser: ["Hattepon-Cornerstone"],
+		num: 2406,
+		gen: 9,
+		desc: "Hattepon-Cornerstone: 1.2x power attacks; Terastallize to gain Embody Aspect.",
 	},
 };

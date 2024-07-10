@@ -2,10 +2,31 @@ export const Scripts: ModdedBattleScriptsData = {
 	gen: 9,
 	teambuilderConfig: {
         excludeStandardTiers: true,
-        customTiers: ['FEOU', 'FEUU', 'FENFE', 'FELC'],
+        customTiers: ['FEOU', 'FEUUBL', 'FEUU', 'FENFE', 'FELC'],
 	},
 	actions: {
 		inherit: true,
+		terastallize(pokemon: Pokemon) {
+			if (pokemon.illusion && ['Ogerpon', 'Terapagos', 'Hattepon'].includes(pokemon.illusion.species.baseSpecies)) {
+				this.battle.singleEvent('End', this.dex.abilities.get('Rough Image'), pokemon.abilityState, pokemon);
+			}
+	
+			const type = pokemon.teraType;
+			this.battle.add('-terastallize', pokemon, type);
+			pokemon.terastallized = type;
+			for (const ally of pokemon.side.pokemon) {
+				ally.canTerastallize = null;
+			}
+			pokemon.addedType = '';
+			pokemon.knownType = true;
+			pokemon.apparentType = type;
+			pokemon.side.addSideCondition('teraused', pokemon);
+			if (['Ogerpon','Hattepon'].includes(pokemon.species.baseSpecies)) {
+				const tera = ['ogerpon','hattepon'].includes(pokemon.species.id) ? 'tealtera' : 'tera';
+				pokemon.formeChange(pokemon.species.id + tera, null, true);
+			}
+			this.battle.runEvent('AfterTerastallization', pokemon);
+		},
 		canMegaEvo(pokemon) {
 			const altForme = pokemon.baseSpecies.otherFormes && this.dex.species.get(pokemon.baseSpecies.otherFormes[0]);
 			const item = pokemon.getItem();
@@ -48,6 +69,11 @@ export const Scripts: ModdedBattleScriptsData = {
 				case "Tentazor":
 					if (item.name === "Scizorite") {
 						return "Tentazor-Mega";
+					}
+					break;
+				case "Aerodirge":
+					if (item.name === "Aerodactylite") {
+						return "Aerodirge-Mega";
 					}
 					break;
 			}
@@ -159,7 +185,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		
 				if (zMove) {
 					if (pokemon.illusion) {
-						this.battle.singleEvent('End', this.dex.abilities.get('Illusion'), pokemon.abilityState, pokemon);
+						this.battle.singleEvent('End', this.dex.abilities.get('Rough Image'), pokemon.abilityState, pokemon);
 					}
 					this.battle.add('-zpower', pokemon);
 					pokemon.side.zMoveUsed = true;
@@ -505,7 +531,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			// If a Fire/Flying type uses Burn Up and Roost, it becomes ???/Flying-type, but it's still grounded.
 			if (!negateImmunity && this.hasType('Flying') && !('roost' in this.volatiles)) return false;
 			if (
-				(this.hasAbility(['levitate', 'holygrail', 'risingtension', 'freeflight', 'airbornearmor', 'hellkite','honeymoon','aircontrol','magnetize'])) &&
+				(this.hasAbility(['levitate', 'holygrail', 'risingtension', 'freeflight', 'airbornearmor', 'hellkite','honeymoon','aircontrol','magnetize','unidentifiedflyingobject'])) &&
 				!this.battle.suppressingAbility(this)
 			) return null;
 			if ('magnetrise' in this.volatiles/*) return false;

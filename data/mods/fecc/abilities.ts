@@ -108,7 +108,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 	baseballed: {
 		onTryHit(target, source, move) {
 			if (source.hasType(move.type) && target !== source) {
-				this.add(`raw|<img src="https://cdn.discordapp.com/attachments/862940088122867722/1223475560882114580/1080726657708593172.png?ex=6619fd68&is=66078868&hm=a2a4709233c25ae27af6ee5d78748ba79c0e47e2e921a07776b47001808a6d54&" height="400" width="400">`);
+				this.add(`raw|<img src="https://i.imgur.com/7KKaKgO.png" height="400" width="400">`);
 				return null;
 			}
 		},
@@ -373,6 +373,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				this.heal(pokemon.baseMaxhp, pokemon);
 			}
 		},
+		flags: {failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, cantsuppress: 1, notransform: 1},
 		name: "Second Phase",
 		//shortDesc: "Changes to Zygarb-Reclyced at 0 or less HP and fully heals user.",
 	},
@@ -383,7 +384,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		onSourceAfterFaint(length, target, source, effect) {
 			if (effect && effect.effectType === 'Move') {
-				this.add(`raw|<img src="https://cdn.discordapp.com/attachments/823046216471937075/1225127851917840455/20240403_1347081.jpg?ex=66200039&is=660d8b39&hm=f138c2bac796940ff29ae04430a6286a3d2e9ff2e83ead38bf84bd901c263049&" height="538" width="720">`);
+				this.add(`raw|<img src="https://i.imgur.com/3QF9UUi.jpeg" height="538" width="720">`);
 				this.boost({atk: length}, source);
 			}
 		},
@@ -402,6 +403,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onDamagingHitOrder: 1,
 		onDamagingHit(damage, target, source, move) {
 			if (!target.hp && !source.status && source.runStatusImmunity('powder')) {
+				this.add(`raw|<img src="https://i.imgur.com/COMfOZm.jpeg" height="538" width="720">`);
 				const r = this.random(30);
 				if (r < 11) {
 					source.setStatus('slp', target);
@@ -556,9 +558,10 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 					pokemon.ate = true;
 					this.add('-message', `${pokemon.name} swallowed!`);
 					this.runEvent('EatItem', pokemon, null, null, item);
-					pokemon.setItem(pokemon.lastItem);
+					console.log(pokemon.item);
+					pokemon.setItem(pokemon.item);
+					this.add('-item', pokemon, pokemon.item);
 					pokemon.lastItem = '';
-					this.add('-item', pokemon, pokemon.getItem(), '[silent]');
 				}
 			}
 		},
@@ -738,7 +741,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		onStart(pokemon) {
 			if (pokemon.baseSpecies.baseSpecies !== 'Zyggizaggi' || pokemon.level < 20 || pokemon.transformed || !pokemon.hp) return;
 			this.add('-message', "Math is my middle name(it isn't really)");
-			this.add(`raw|<img src="https://media.discordapp.net/attachments/823046216471937075/1224519946453778513/unknown.png?ex=661dca11&is=660b5511&hm=a1052fd135e6832c0106f5c5f1f31badffdd5f798a4cfccc5575f0cfe8d53b18&=&format=webp&quality=lossless&width=859&height=1332" height="1332" width="859">`);
+			this.add(`raw|<img src="https://i.imgur.com/kKT2wU0.png" height="1332" width="859">`);
 			
 			let changeHP = false;
 			let previousFormeHP = pokemon.species.baseStats.hp;
@@ -1580,7 +1583,8 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		condition: {
 			duration: 5,
 			onStart(target) {
-				this.add('-start', target, 'ability: Quickstart');
+				this.add(`c:|${Math.floor(Date.now() / 1000)}|${target.name}|Faster than fast, Quicker than quick. I am lightning.\nSpeed. I am speed.`);
+				this.add('-start', target, 'ability: Quickstart', '[silent]');
 			},
 			onModifyAtkPriority: 5,
 			onModifyAtk(atk, pokemon) {
@@ -1623,7 +1627,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		},
 		condition: {
 			onStart(pokemon) {
-				const index = pokemon.moves.indexOf(pokemon.lastMove);
+				const index = pokemon.moves.indexOf(pokemon.lastMove.id);
 				const kingsshield = {
 					move: "King's Shield",
 					id: "kingsshield",
@@ -1711,7 +1715,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 				return 0;
 			};
 		},
-		flags: {},
+		flags: {failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1},
 		name: "Code Breaker",
 		//shortDesc: "This Pokemon's moves and their effects ignore the Types of other Pokemon.",
 	},
@@ -1728,7 +1732,7 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 			const newTypes = [newType1, newType2];
 			if(pokemon.setType(newTypes)) this.add('-start', pokemon, 'typechange', newTypes.join('/'), '[silent]');
 		},
-		flags: {},
+		flags: {failroleplay: 1, noreceiver: 1, noentrain: 1, notrace: 1, failskillswap: 1, notransform: 1},
 		name: "Prismatic",
 		//shortDesc: "This Pokemon changes to a random typing at the end of each turn.",
 	},
@@ -1864,6 +1868,14 @@ export const Abilities: {[k: string]: ModdedAbilityData} = {
 		//shortDesc: "Vessel of Ruin + Pokemon without this ability can only select 0.75x moves.",
 	},
 	swallowswallow: {
+		onModifyDamage(damage, source, target, move) {
+			if (move && target.getMoveHitData(move).typeMod > 0) {
+				this.add(`c:|${Math.floor(Date.now() / 1000)}|${source.name}|I'm Smart`);
+			}
+			else if (target.getMoveHitData(move).typeMod < 0) {
+				this.add(`c:|${Math.floor(Date.now() / 1000)}|${source.name}|I'm Dumb`);
+			}
+		},
 		onTryHit(target, source, move) {
 			if (move.type === 'Flying' && target !== source) {
 				this.add('-immune', target, '[from] ability: Swallow Swallow');
